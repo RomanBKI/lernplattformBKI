@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>BKI Lernplattform</title>
+  <meta name="description" content="Lernplattform für Lernende Elektroinstallateur/in EFZ und Montage-Elektriker/in EFZ">
+  <meta name="theme-color" content="#12294a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="BKI Lernen">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <div id="app" aria-live="polite">
+    <div class="boot">Lädt …</div>
+  </div>
+  <div id="modal-root"></div>
+  <div id="toast" role="status"></div>
+
+  <!-- Konfiguration & Daten -->
+  <script src="config.js"></script>
+  <script src="data/lehrplan.js"></script>
+  <script src="data/aufgaben/_index.js"></script>
+  <script src="data/aufgaben/lj1.js"></script>
+  <script src="data/aufgaben/lj2.js"></script>
+  <script src="data/aufgaben/lj3.js"></script>
+  <script src="data/aufgaben/lj4.js"></script>
+  <script src="data/aufgaben/qv.js"></script>
+
+  <!-- Datenbank (nur geladen, wenn Supabase konfiguriert ist) -->
+  <script>
+    if (window.APP_CONFIG && window.APP_CONFIG.SUPABASE_URL) {
+      document.write('<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"><\/script>');
+    }
+  </script>
+
+  <!-- App -->
+  <script src="js/util.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/aufgaben.js"></script>
+  <script src="js/lernen.js"></script>
+  <script src="js/admin.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

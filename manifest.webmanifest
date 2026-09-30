@@ -1,0 +1,16 @@
+{
+  "name": "BKI Lernplattform",
+  "short_name": "BKI Lernen",
+  "description": "Lernplattform für Lernende Elektroinstallateur/in EFZ und Montage-Elektriker/in EFZ",
+  "lang": "de-CH",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#12294a",
+  "theme_color": "#12294a",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
