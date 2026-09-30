@@ -11,9 +11,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="BKI Lernen">
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="icon" href="icons/icon-192.png">
-  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-  <link rel="stylesheet" href="css/app.css">
+  <link rel="icon" href="icon-192.png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="stylesheet" href="app.css">
 </head>
 <body>
   <div id="app" aria-live="polite">
@@ -24,13 +24,13 @@
 
   <!-- Konfiguration & Daten -->
   <script src="config.js"></script>
-  <script src="data/lehrplan.js"></script>
-  <script src="data/aufgaben/_index.js"></script>
-  <script src="data/aufgaben/lj1.js"></script>
-  <script src="data/aufgaben/lj2.js"></script>
-  <script src="data/aufgaben/lj3.js"></script>
-  <script src="data/aufgaben/lj4.js"></script>
-  <script src="data/aufgaben/qv.js"></script>
+  <script src="lehrplan.js"></script>
+  <script>window.AUFGABEN = window.AUFGABEN || [];</script>
+  <script src="lj1.js"></script>
+  <script src="lj2.js"></script>
+  <script src="lj3.js"></script>
+  <script src="lj4.js"></script>
+  <script src="qv.js"></script>
 
   <!-- Datenbank (nur geladen, wenn Supabase konfiguriert ist) -->
   <script>
@@ -40,11 +40,11 @@
   </script>
 
   <!-- App -->
-  <script src="js/util.js"></script>
-  <script src="js/store.js"></script>
-  <script src="js/aufgaben.js"></script>
-  <script src="js/lernen.js"></script>
-  <script src="js/admin.js"></script>
-  <script src="js/app.js"></script>
+  <script src="util.js"></script>
+  <script src="store.js"></script>
+  <script src="aufgaben.js"></script>
+  <script src="lernen.js"></script>
+  <script src="admin.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
