@@ -10,8 +10,8 @@
  * die Datenbank-Regeln (Row Level Security) geschützt.
  */
 window.APP_CONFIG = {
-  SUPABASE_URL: "",
-  SUPABASE_ANON_KEY: "",
+  SUPABASE_URL: "https://pngdgmewusdxcubpqsae.supabase.co",
+  SUPABASE_ANON_KEY: "sb_publishable_RdFpYNhy7kdVvHSFMrCwiQ_gRWebSTM",
 
   // Name der App (erscheint oben und auf dem Home-Bildschirm)
   APP_NAME: "BKI Lernplattform",

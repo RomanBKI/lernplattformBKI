@@ -17,17 +17,25 @@
   const { esc, shuffle, norm, zahl, $$ } = U;
   const TYPEN = {
     auswahl: "Auswahl", wahrfalsch: "Richtig / Falsch", zuordnen: "Zuordnen", reihenfolge: "Reihenfolge",
-    luecke: "Lückentext", rechnen: "Berechnen", freitext: "Beschreiben"
+    luecke: "Lückentext", rechnen: "Berechnen", freitext: "Beschreiben", karte: "Lernkarte"
   };
 
   function bildHtml(a) {
     if (!a.bild) return "";
+    if (typeof a.bild === "string") return bildAus(a.bild);
     if (a.bild.svg) return `<div class="task-img">${a.bild.svg}</div>`;
     if (a.bild.src) return `<div class="task-img"><img src="${esc(a.bild.src)}" alt="${esc(a.bild.alt || "")}"></div>`;
     return "";
   }
 
-  function render(el, a) {
+  function bildAus(b) {
+    if (!b) return "";
+    if (typeof b === "string") b = { svg: (window.BILD && window.BILD[b]) || "" };
+    return bildHtml({ bild: b });
+  }
+
+  function render(el, a, opt = {}) {
+    if (a.typ === "karte") return renderKarte(el, a, opt);
     el.innerHTML = `
       <div class="task-q">${esc(a.frage)}</div>
       ${bildHtml(a)}
@@ -55,7 +63,47 @@
       <strong>${titel}</strong>
       ${r.zusatz ? `<div class="small" style="margin-bottom:6px">${r.zusatz}</div>` : ""}
       ${a.erklaerung ? `<div class="expl">${esc(a.erklaerung)}</div>` : ""}
+      ${a.quelle ? `<div class="quelle">📖 Nachlesen: ${esc(a.quelle)}</div>` : ""}
     </div>`;
+  }
+
+  /* Lernkarte: Vorderseite -> umdrehen -> selbst einschätzen */
+  function renderKarte(el, a, opt) {
+    el.innerHTML = `
+      <div class="karte">
+        <div class="karte-seite vorne">
+          <div class="karte-label">Frage</div>
+          <div class="task-q">${esc(a.frage)}</div>
+          ${bildHtml(a)}
+        </div>
+        <div class="karte-seite hinten" hidden>
+          <div class="karte-label">Antwort</div>
+          <div class="karte-antwort">${esc(a.antwort)}</div>
+          ${a.bild_antwort ? bildAus(a.bild_antwort) : ""}
+          ${a.quelle ? `<div class="quelle">📖 Nachlesen: ${esc(a.quelle)}</div>` : ""}
+        </div>
+      </div>
+      <div class="karte-aktion">
+        <button type="button" class="btn block" data-drehen>↻ Karte umdrehen</button>
+      </div>`;
+    const akt = el.querySelector(".karte-aktion");
+    el.querySelector("[data-drehen]").onclick = () => {
+      el.querySelector(".hinten").hidden = false;
+      el.querySelector(".karte").classList.add("offen");
+      akt.innerHTML = `<p class="small muted" style="margin:0 0 8px">Wie gut wusstest du es?</p>
+        <div class="btn-row">
+          <button type="button" class="btn bad" style="flex:1" data-r="0">✗ Nicht gewusst</button>
+          <button type="button" class="btn ghost" style="flex:1" data-r="0.5">~ Teilweise</button>
+          <button type="button" class="btn ok" style="flex:1" data-r="1">✓ Gewusst</button>
+        </div>`;
+      $$("[data-r]", akt).forEach((b) => (b.onclick = () => {
+        const ergebnis = Number(b.dataset.r);
+        akt.innerHTML = `<div class="feedback ${ergebnis >= 1 ? "ok" : ergebnis > 0 ? "part" : "bad"}"><strong>${ergebnis >= 1 ? "Super!" : ergebnis > 0 ? "Fast – die Karte kommt wieder." : "Kein Problem – die Karte kommt wieder."}</strong></div>`;
+        if (opt.onErgebnis) opt.onErgebnis({ ergebnis });
+      }));
+      el.querySelector(".hinten").scrollIntoView({ behavior: "smooth", block: "nearest" });
+    };
+    return { selbst: true, pruefen: () => ({ unvollstaendig: true, meldung: "Bitte zuerst die Karte umdrehen." }) };
   }
 
   const R = {};
@@ -120,7 +168,7 @@
 
   /* Zuordnen */
   R.zuordnen = (body, a) => {
-    const rechts = shuffle(a.paare.map((p) => p.rechts).concat(a.ablenker || []));
+    const rechts = shuffle([...new Set(a.paare.map((p) => p.rechts).concat(a.ablenker || []))]);
     body.innerHTML = a.paare.map((p, i) => `
       <div class="pair" data-i="${i}"><div><strong>${esc(p.links)}</strong></div>
         <select aria-label="${esc(p.links)}"><option value="">– wählen –</option>${rechts.map((r) => `<option>${esc(r)}</option>`).join("")}</select>

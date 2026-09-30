@@ -160,3 +160,13 @@ data/aufgaben/*.js      Aufgaben pro Lehrjahr und QV
 supabase/setup.sql      Datenbank einrichten
 manifest.webmanifest, sw.js, icons/   App-Symbol und Offline-Funktion
 ```
+
+---
+
+## Lernkarten
+
+Neben den Aufgaben gibt es **Lernkarten**: Vorderseite lesen, **umdrehen**, dann selbst einschätzen mit «Nicht gewusst», «Teilweise» oder «Gewusst». Nicht gewusste Karten kommen beim nächsten Mal zuerst. Lernende finden sie auf der Startseite (🃏 Lernkarten) und auf jeder Fachseite.
+
+## Dateien im GitHub-Projekt (flach, ohne Unterordner)
+
+Alle Dateien liegen direkt im Hauptordner. Neue Aufgaben-Serien kommen als eigene Dateien dazu (z. B. `s1-lj1.js`, `s1-karten.js`) und werden in `index.html` eingetragen. Zeichnungen für Aufgaben liegen in `bilder.js`.

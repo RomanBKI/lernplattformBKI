@@ -40,6 +40,7 @@
       <div class="btn-row" style="margin-bottom:6px">
         <a class="btn accent" style="flex:1" href="#/lernen/weiter" ${offen.length ? "" : "aria-disabled=true"}>▶ Weiterlernen${offen.length ? ` (${Math.min(10, offen.length)})` : ""}</a>
         ${fehler.length ? `<a class="btn ghost" style="flex:1" href="#/lernen/fehler">↻ Fehler wiederholen (${fehler.length})</a>` : ""}
+        ${alle.some((a) => a.typ === "karte") ? `<a class="btn ghost" style="flex:1" href="#/lernen/karten">🃏 Lernkarten (${alle.filter((a) => a.typ === "karte").length})</a>` : ""}
       </div>`;
 
     if (!alle.length) {
@@ -76,7 +77,10 @@
         <div class="row">${kuerzelHtml(f)}<div style="flex:1"><h2 style="margin:0">${esc(f.titel)}</h2>
           <div class="small muted">${p.geloest} von ${p.total} Aufgaben gelöst</div></div></div>
         <div style="margin:12px 0">${balken(p.anteil)}</div>
-        ${liste.length ? `<a class="btn block" href="#/lernen/fach/${esc(f.id)}">▶ Ganzes Fach üben</a>` : ""}
+        <div class="btn-row">
+          ${liste.some((a) => a.typ !== "karte") ? `<a class="btn" style="flex:1" href="#/lernen/fach/${esc(f.id)}">▶ Aufgaben üben</a>` : ""}
+          ${liste.some((a) => a.typ === "karte") ? `<a class="btn ghost" style="flex:1" href="#/lernen/karten/${esc(f.id)}">🃏 Lernkarten</a>` : ""}
+        </div>
       </div>
       <div class="section-title">Themen</div>`;
     if (!themen.length) html += `<div class="card empty">Hier gibt es für dich noch keine Aufgaben.</div>`;
@@ -104,14 +108,21 @@
     let liste, titel, zurueck = "#/";
     const basis = test ? App.aufgaben : sichtbar();
     if (art === "lz") { liste = basis.filter((a) => a.lz === wert); const t = App.thema(wert); titel = t ? (/^(uek|qv)/.test(wert) ? t.thema.titel : `${t.fach.kuerzel} · LZ ${wert}`) : wert; zurueck = t ? `#/fach/${t.fach.id}` : "#/"; }
-    else if (art === "fach") { liste = basis.filter((a) => a.fach === wert); const f = App.fach(wert); titel = f ? f.titel : wert; zurueck = `#/fach/${wert}`; }
+    else if (art === "fach") { liste = basis.filter((a) => a.fach === wert && a.typ !== "karte"); const f = App.fach(wert); titel = f ? f.titel : wert; zurueck = `#/fach/${wert}`; }
     else if (art === "fehler") { liste = basis.filter((a) => App.fortschritt[a.id] && App.fortschritt[a.id].letztes < 1); titel = "Fehler wiederholen"; }
+    else if (art === "karten") {
+      liste = basis.filter((a) => a.typ === "karte" && (!wert || a.fach === wert));
+      // Nicht gewusste zuerst, dann neue, dann gewusste
+      const rang = (a) => { const f = App.fortschritt[a.id]; return !f ? 1 : f.letztes < 1 ? 0 : 2; };
+      liste = U.shuffle(liste).sort((x, y) => rang(x) - rang(y)).slice(0, 20);
+      titel = "Lernkarten"; if (wert) zurueck = `#/fach/${wert}`;
+    }
     else if (art === "ids") { liste = wert.split(",").map(App.aufgabe).filter(Boolean); titel = "Aufgaben testen"; zurueck = "#/admin/aufgaben"; }
     else { liste = U.shuffle(basis.filter((a) => !App.geloest(a.id))).slice(0, 10); titel = "Weiterlernen"; }
     if (test) zurueck = "#/admin/aufgaben";
 
     // ungelöste zuerst
-    if (!test && art !== "weiter") liste = liste.filter((a) => !App.geloest(a.id)).concat(liste.filter((a) => App.geloest(a.id)));
+    if (!test && art !== "weiter" && art !== "karten") liste = liste.filter((a) => !App.geloest(a.id)).concat(liste.filter((a) => App.geloest(a.id)));
 
     if (!liste.length) {
       return App.rahmen(`<div class="card empty">Keine Aufgaben vorhanden. 🎉<br><br><a class="btn" href="${zurueck}">Zurück</a></div>`, { titel, zurueck });
@@ -142,10 +153,7 @@
         <div class="sticky-actions"><div class="btn-row">
           <button class="btn block" id="pruefen">Antwort prüfen</button>
         </div></div>`;
-      const ctrl = Aufgaben.render($("#aufgabe", box), a);
-      $("#pruefen", box).onclick = async () => {
-        const r = ctrl.pruefen();
-        if (r.unvollstaendig) return toast(r.meldung);
+      const nachErgebnis = (r) => {
         resultate.push({ a, ergebnis: r.ergebnis });
         if (!test && !istAdmin()) {
           const alt = App.fortschritt[a.id] || { versuche: 0, bestes: 0 };
@@ -159,6 +167,13 @@
         $("#weiter", box).onclick = () => { i++; i < liste.length ? zeige() : ende(); };
         $("#weiter", box).scrollIntoView({ behavior: "smooth", block: "nearest" });
       };
+      const ctrl = Aufgaben.render($("#aufgabe", box), a, { onErgebnis: nachErgebnis });
+      if (ctrl.selbst) $(".sticky-actions .btn-row", box).innerHTML = "";
+      $("#pruefen", box) && ($("#pruefen", box).onclick = () => {
+        const r = ctrl.pruefen();
+        if (r.unvollstaendig) return toast(r.meldung);
+        nachErgebnis(r);
+      });
     }
 
     function ende() {

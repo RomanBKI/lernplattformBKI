@@ -18,7 +18,7 @@ AUFGABEN.push(
     titel: "Messresultat interpretieren",
     frage: "Bei der Erstprüfung misst du an einer Steckdose (U0 = 230 V) eine Schleifenimpedanz von Zs = 1,2 Ω. Der Stromkreis ist mit LS B13 geschützt.\nBerechne den Kurzschlussstrom Ik.",
     loesung: 191.7, einheit: "A", toleranz: 0.01,
-    erklaerung: "Ik = U0 / Zs = 230 V / 1,2 Ω ≈ 192 A.\nFür die unverzögerte Auslösung braucht ein B13 höchstens 5 × 13 A = 65 A. 192 A > 65 A → Die Abschaltbedingung ist erfüllt (vereinfachte Betrachtung, ohne Korrekturfaktoren)."
+    erklaerung: "Ik = U0 / Zs = 230 V / 1,2 Ω ≈ 192 A.\nFür den Nachweis der Abschaltzeit wird der Messwert mit dem Korrekturfaktor 0,66 multipliziert: 192 A · 0,66 ≈ 127 A. Ein B13 braucht für 0,4 s mindestens 5 × 13 A = 65 A → Die Abschaltbedingung ist erfüllt.",
   },
   {
     id: "lj4-praesenzmelder-01", typ: "freitext", lehrjahr: 4, berufe: ["EI"], fach: "d", lz: "d1.2",

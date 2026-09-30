@@ -212,3 +212,15 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: .92rem; }
 details.lz { border-top: 1px solid var(--line); padding: 10px 0; }
 details.lz summary { cursor: pointer; font-weight: 600; }
 .hint-admin a { color: inherit; font-weight: 700; }
+
+/* Lernkarten */
+.karte { perspective: 1200px; }
+.karte-seite { border-radius: 14px; padding: 16px; }
+.karte-seite.vorne { background: var(--info-bg); }
+.karte-seite.hinten { background: var(--ok-bg); margin-top: 12px; animation: kippen .35s ease-out; }
+.karte-label { font-size: .72rem; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: 6px; }
+.karte-antwort { font-size: 1.05rem; white-space: pre-line; margin-bottom: 8px; }
+.karte-aktion { margin-top: 14px; }
+@keyframes kippen { from { transform: rotateX(-70deg); opacity: 0; } to { transform: none; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .karte-seite.hinten { animation: none; } }
+.quelle { font-size: .8rem; color: var(--muted); margin-top: 8px; }
