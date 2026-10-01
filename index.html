@@ -19,6 +19,27 @@
   <div id="app" aria-live="polite">
     <div class="boot">Lädt …</div>
   </div>
+  <script>
+    /* Falls etwas beim Start schiefgeht: Meldung statt endlosem «Lädt …» */
+    (function () {
+      function zeige(text) {
+        var app = document.getElementById("app");
+        if (!app || !app.querySelector(".boot")) return;
+        app.innerHTML = '<div style="padding:40px 20px;max-width:480px;margin:0 auto;font-family:-apple-system,sans-serif">' +
+          '<h2>Die App konnte nicht starten</h2><p>Bitte Seite neu laden. Falls es wieder passiert, schicke diese Meldung deinem Berufsbildner:</p>' +
+          '<pre style="white-space:pre-wrap;background:#f3f5f8;padding:12px;border-radius:10px;font-size:12px">' + String(text).replace(/</g, "&lt;") +
+          '\n\n' + navigator.userAgent.replace(/</g, "&lt;") + '</pre>' +
+          '<button onclick="location.reload()" style="padding:12px 18px;border-radius:10px;border:0;background:#1d3f6e;color:#fff;font-size:16px">Neu laden</button></div>';
+      }
+      window.addEventListener("error", function (e) {
+        var t = e.target;
+        if (t && t.tagName === "SCRIPT") return zeige("Datei konnte nicht geladen werden: " + t.src);
+        if (e.message) zeige("Fehler: " + e.message + (e.filename ? " (" + e.filename.split("/").pop() + ":" + e.lineno + ")" : ""));
+      }, true);
+      window.addEventListener("unhandledrejection", function (e) { zeige("Fehler: " + (e.reason && e.reason.message || e.reason)); });
+      setTimeout(function () { zeige("Zeitüberschreitung beim Start (20 s). Supabase geladen: " + !!window.supabase + ", App geladen: " + !!window.App); }, 20000);
+    })();
+  </script>
   <div id="modal-root"></div>
   <div id="toast" role="status"></div>
 
@@ -37,6 +58,8 @@
   <script src="s1-lj2.js"></script>
   <script src="s1-lj34.js"></script>
   <script src="s1-karten.js"></script>
+  <!-- Serie 2 (NIN 2025) -->
+  <script src="s2-nin.js"></script>
 
   <!-- Datenbank (nur geladen, wenn Supabase konfiguriert ist) -->
   <script>

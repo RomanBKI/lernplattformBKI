@@ -1,6 +1,6 @@
 /* Service Worker: "Netzwerk zuerst" – neue Versionen erscheinen sofort,
    ohne Internet wird die zuletzt geladene Version angezeigt. */
-const CACHE = "bki-lernen-v1";
+const CACHE = "bki-lernen-v2";
 self.addEventListener("install", (e) => self.skipWaiting());
 self.addEventListener("activate", (e) => e.waitUntil(
   caches.keys().then((ks) => Promise.all(ks.filter((k) => k !== CACHE).map((k) => caches.delete(k)))).then(() => self.clients.claim())

@@ -160,9 +160,21 @@
   App.route = route;
   window.addEventListener("hashchange", route);
 
+  const mitTimeout = (p, ms) => Promise.race([p, new Promise((_, rej) => setTimeout(() => rej(new Error("Zeitüberschreitung")), ms))]);
+
+  function keineVerbindung() {
+    $("#app").innerHTML = `<div class="login"><div class="card">
+      <div class="logo">${U.logo.replace('width="18" height="18"', 'width="30" height="30"')}</div>
+      <h1>Keine Verbindung</h1>
+      <p>Die Lernplattform kann ihre Datenbank nicht erreichen. Das passiert oft in <strong>Firmen- oder Schul-WLANs</strong>, die solche Dienste sperren.</p>
+      <p><strong>Tipp:</strong> WLAN ausschalten und mit mobilen Daten versuchen.</p>
+      <button class="btn block" onclick="location.reload()">Neu laden</button></div></div>`;
+  }
+
   async function start() {
-    try { App.user = await Store.init(); } catch (e) { App.user = null; }
-    if (App.user) { try { await ladeDaten(); } catch (e) { toast(e.message); } }
+    if (!window.Store) return keineVerbindung();
+    try { App.user = await mitTimeout(Store.init(), 8000); } catch (e) { App.user = null; }
+    if (App.user) { try { await mitTimeout(ladeDaten(), 15000); } catch (e) { toast(e.message); } }
     route();
   }
 

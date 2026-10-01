@@ -277,5 +277,24 @@
     ${nr(100, 90, 1)}${nr(250, 190, 2)}`,
     "Vereinfachte Auslösekennlinie eines Leitungsschutzschalters: 1 gekrümmter Bereich bei kleinen Überströmen, 2 senkrechter Bereich bei hohen Strömen, B zwischen 3 und 5 mal In, C zwischen 5 und 10 mal In");
 
+
+  /* Bad mit möglichen Steckdosen-Positionen A, B, C */
+  const dose = (x, y, n) => `<rect x="${x - 11}" y="${y - 11}" width="22" height="22" rx="4" fill="#fff" stroke="#c62828" stroke-width="2.5"/><circle cx="${x - 4}" cy="${y}" r="2" fill="#c62828"/><circle cx="${x + 4}" cy="${y}" r="2" fill="#c62828"/>${T(x, y - 17, n, 'font-weight="800" text-anchor="middle" fill="#c62828"')}`;
+  B.badsteckdose = svg(440, 250, `
+    <rect x="40" y="40" width="130" height="170" fill="#dbe9fb"/>
+    <rect x="170" y="40" width="90" height="170" fill="#e7f5ea"/>
+    <rect x="40" y="160" width="130" height="50" fill="#9cc3f0"/>
+    <path d="M40 30 V210 H420" ${S}/>
+    <path d="M40 160 H170 V210" stroke="#16202e" stroke-width="3" fill="none"/>
+    <line x1="40" y1="40" x2="260" y2="40" stroke="#5d6b7e" stroke-dasharray="5 4"/>
+    <line x1="170" y1="40" x2="170" y2="160" stroke="#5d6b7e" stroke-dasharray="5 4"/>
+    <line x1="260" y1="40" x2="260" y2="210" stroke="#5d6b7e" stroke-dasharray="5 4"/>
+    ${T(80, 190, "Bereich 0", 'font-weight="700" text-anchor="middle" font-size="12"')}
+    ${T(80, 70, "Bereich 1", 'font-weight="700" text-anchor="middle" font-size="12"')}
+    ${T(215, 70, "Bereich 2", 'font-weight="700" text-anchor="middle" font-size="12"')}
+    ${dose(120, 120, "A")}${dose(215, 130, "B")}${dose(330, 130, "C")}
+    ${pfeil(170, 226, 260, 226)}${T(196, 244, "0,6 m")}`,
+    "Badezimmer mit drei Steckdosen: A über der Wanne im Bereich 1, B im Bereich 2, C ausserhalb von Bereich 2");
+
   window.BILD = B;
 })();

@@ -111,7 +111,11 @@
   /* ------------------------------------------------------------------ */
   function SupabaseStore() {
     const sb = window.supabase.createClient(CFG.SUPABASE_URL, CFG.SUPABASE_ANON_KEY, {
-      auth: { persistSession: true, autoRefreshToken: true, storageKey: "bki-lernen-auth" }
+      auth: {
+        persistSession: true, autoRefreshToken: true, storageKey: "bki-lernen-auth",
+        // Kein Browser-Lock verwenden (verhindert Hänger in Safari / iOS)
+        lock: (name, timeout, fn) => fn()
+      }
     });
     let profil = null;
     const ok = ({ data, error }) => { if (error) throw new Error(uebersetze(error.message)); return data; };
@@ -202,5 +206,6 @@
     };
   }
 
-  window.Store = (CFG.SUPABASE_URL && window.supabase) ? SupabaseStore() : DemoStore();
+  // Ist Supabase eingetragen, aber nicht ladbar (z. B. gesperrtes WLAN), KEIN Demo-Modus starten
+  window.Store = CFG.SUPABASE_URL ? (window.supabase ? SupabaseStore() : null) : DemoStore();
 })();
